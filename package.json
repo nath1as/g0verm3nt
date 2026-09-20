@@ -1,0 +1,25 @@
+{
+  "name": "government",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "bun run typecheck && bun run lint && bun run test",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "bun test",
+    "run": "bun run src/cli/main.ts run",
+    "demo": "bun run src/cli/main.ts run fake-task --json"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.12",
+    "@biomejs/biome": "2.4.3",
+    "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "effect": "3.22.2"
+  },
+  "engines": {
+    "bun": ">=1.4.2"
+  }
+}
