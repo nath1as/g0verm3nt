@@ -1,5 +1,7 @@
 # Luna calibration and harder repair tasks
 
+Continuation authority: [revised repair discovery protocol](repair-discovery-protocol.md). It corrects the v2 novelty and individual-defect claims below, introduces three fresh contracts, and specifies an equal-attempt retry control. Historical run rules and observations are retained unchanged.
+
 Status: two development calibrations have executed; see [original result](luna-calibration-result.md) and [v2 result](luna-calibration-v2-result.md). Each returned five verified tasks and one failure, so the frozen rule classifies both as too easy. No workflow comparison or learning stage was launched. Both corpora were qualified and frozen before provider execution and are not revised from their outcomes.
 
 The original corpus is closed after its too-easy result. The new development corpus is versioned separately: `bun src/experiments/luna-calibration.ts <new-state-directory> --qualify --v2`, then `bun src/experiments/luna-calibration.ts <same-state-directory> --run --v2`. Qualification independently runs public and hidden suites against the reference and original source inside the actual sandbox. An existing launch manifest prevents replay. Frozen source snapshots and durable SQLite provider/evaluation records remain in the state directory.

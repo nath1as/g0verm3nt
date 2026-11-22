@@ -2,6 +2,10 @@
 
 Status: proposed build plan; no implementation milestones are complete.
 
+Current implementation evidence is tracked in [the audit](docs/implementation-audit.md); the status above describes the original plan. Research continuation now follows the [repository benchmark reset](docs/tasks/repository-benchmark-plan.md). Synthetic repair pilots are closed and are not evidence of adaptive benefit.
+
+The [official benchmark smoke bridge](docs/tasks/repository-benchmark-smoke.md) is implemented and offline-tested. Docker is available; pinned image provisioning and live base/gold qualification are pending; repository-worker isolation remains a subsequent gate.
+
 Design authority: [Computational Shard Formal Model v0.3](./computational-shard.md).
 
 The agreed stack is strict TypeScript, Effect, Bun, OpenTUI with React, and SQLite. Government will start as a local CLI research prototype; OpenTUI with React remains the planned interactive client after the first adaptation assessment. Its core will be functional: immutable definitions and graphs, pure decisions and state transitions, explicit effect requests, and versioned evidence.
@@ -556,7 +560,15 @@ A candidate record includes discovery event references, proposed interface/scope
 
 Use ordinary versioned shard capabilities for narrow semantic observations such as `NeedsDecomposition`, `ContextMissing`, and `RepeatedFailure`. Return a declared tag or `Unknown`, with source references and estimator identity; retain probability vectors when available. TypeSafe's routing, retrieval, and trace-classification examples motivate this pattern, but its advertised speed and quality are not Government measurements. No TypeSafe dependency is required. [TypeSafe use cases](https://docs.typesafe.ai/concepts/use-case-map)
 
+The [semantic decision contract](docs/tasks/semantic-decision-contract.md) specifies three separately versioned capabilities: applicability checking before inference, semantic estimation, and action selection under a budget-aware policy. Applicability declares task/language scope, required evidence, exact input projection and token limits. Unsupported or ambiguous scope and missing/oversized inputs return `Unknown` before inference; confidence cannot repair an applicability failure. Keep probability calculations inside registered capabilities and expose only declared finite action tags to route predicates.
+
+Bind calibration to the exact model/tokenizer, question schema and ordered options, input projection, applicability policy, label semantics and dataset lineage. Preserve raw and calibrated probabilities, immutable artifact references and explicit uncalibrated status. Changes require new evidence or an explicit transfer certificate. Separate training, calibration fitting, policy selection and final assessment by task lineage; do not tune on reserved assessment. Structured output and proper-scoring-rule training do not establish domain calibration.
+
+Prediction and action are separate records. The frozen action policy accounts for independently established eligibility, error consequences, action-benefit evidence and remaining allocation, including estimator and verification costs. Unknown benefit/cost estimates use the declared constrained policy or fixed fallback, never fabricated expected utility. Recheck admission and reserve allocation at dispatch through the runtime; even fallback must be authorized and affordable or stop explicitly. Durable observation and decision records reference the operation ledger, so restart cannot replay uncertain inference or actions.
+
 A predictive tag may select among capabilities that all accept the current input. It cannot establish a stronger semantic precondition merely because its confidence exceeds a threshold. A restricted fast path still needs the classifier contract and assurance required by the graph checker, or a separately checked guard. `Unknown`, unsupported scope, and estimator failure use a compatible fixed fallback. Producing a classification grants no authority to change validators, grant tools, or publish a revision. The shard may originate a proposal only through the ordinary consistency and governance protocol.
+
+After a real workflow tradeoff is demonstrated, a child may propose a compact selector trained from development traces. Compare the best fixed workflow, a deterministic rule, a conventional small classifier, and optionally a Laya-backed estimator on matched held-out tasks. Include labeling, training, failed candidates, calibration, input projection, startup/residency and serving in cost accounting. The selector's dependencies include calibration and action policy; ordinary admission, invalidation and measured-benefit gates still apply. Laya is an optional implementation candidate, not a new dependency or a reason to change the frozen repository comparison. The [offline decision runtime](docs/tasks/semantic-decision-runtime.md) now implements and tests the core checks and durable inference/recommendation records. Graph registration, atomic action dispatch and empirical calibration admission remain pending.
 
 After the fixed-variant comparison works, test uncertainty-guided escalation as a separately budgeted experiment. Distinguish:
 
@@ -729,6 +741,7 @@ Acceptance:
 - Authored-candidate success and model-discovered-candidate success are reported separately.
 - A held-out comparison includes discovery/evaluation cost and does not relabel reused validation tasks as unseen. Compare the adaptive route with the best fixed eligible M3 configuration selected before assessment, as well as the original baseline.
 - The routing experiment exercises `Unknown`, classifier failure, insufficient budget, and unsupported scope; each follows the declared fallback or explicit failure without granting new authority. Admission and measured-benefit decisions remain separately inspectable.
+- Semantic selectors additionally satisfy the [decision-contract acceptance cases](docs/tasks/semantic-decision-contract.md#acceptance-cases-for-the-implementation-slice): no inference outside declared applicability, exact calibration dependencies, independent action eligibility, post-inference budget checks, stale-dispatch rejection and restart without replay. A saved prediction is neither a contract proof nor an execution grant.
 - A staged candidate can acquire evidence through an evaluation-only run without becoming production-admitted.
 - An accepted relation survives a new session without importing the original conversation. Counterevidence updates the shared view/status and dependent admissions while preserving the original evidence scope.
 - The M3 coding family exercises candidate generation, evaluation, and publication decisions, not only the normalization fixture. An adaptive coding MVP additionally requires a supported coding relation to be promoted and used by a subsequent task.

@@ -157,9 +157,21 @@ export const repairDiscoveryTasks: readonly RepairDiscoveryTask[] = [
     spec: "Repair AtomicTable. Keys are arbitrary strings; values are safe integers, null means absence/deletion. batch applies compare-and-set changes sequentially against a private working copy, so repeated keys see earlier writes in the same batch. A mismatched expected value or invalid new value throws and rolls back the whole batch. begin opens a nested savepoint. commit closes only the innermost savepoint and keeps its writes; rollback restores the innermost entry state. An inner commit must remain undoable by an outer rollback. commit/rollback without a savepoint throw. snapshot is a detached list sorted by raw string order. batches also work outside transactions. Inputs are typed as declared; expected is null or a safe integer.",
     reference: transactionReference,
     mutations: [
-      { id: "partial-batch-leak", before: "const next = new Map(this.data);", after: "const next = this.data;" },
-      { id: "inner-commit-loses-outer", before: "this.undo.pop();", after: "this.undo = [];" },
-      { id: "stale-compare-view", before: "(next.get(change.key) ?? null)", after: "(this.data.get(change.key) ?? null)" },
+      {
+        id: "partial-batch-leak",
+        before: "const next = new Map(this.data);",
+        after: "const next = this.data;",
+      },
+      {
+        id: "inner-commit-loses-outer",
+        before: "this.undo.pop();",
+        after: "this.undo = [];",
+      },
+      {
+        id: "stale-compare-view",
+        before: "(next.get(change.key) ?? null)",
+        after: "(this.data.get(change.key) ?? null)",
+      },
     ],
     publicTests: `test("failed batch is atomic", () => {
       const t=new AtomicTable();
@@ -203,17 +215,34 @@ export const repairDiscoveryTasks: readonly RepairDiscoveryTask[] = [
     spec: "Repair SingleFlight<T>. run shares the exact same pending Promise for a key, invoking its loader synchronously only on first registration. Register before invoking the loader so synchronous reentrant run sees the same flight (loaders must not return their own flight promise). A loader may return a value/promise or throw any value; convert throws into rejection without throwing from run. Completed results are never cached. invalidate detaches the current flight and returns whether one existed; it does not cancel or settle its existing callers. A later run may register a replacement. Settlement of an old detached flight must not erase that replacement. Remove the settling flight before notifying callers, even on rejection; preserve exact result/reason including undefined. pending counts current registrations, excluding detached flights. Keys arbitrary strings.",
     reference: singleFlightReference,
     mutations: [
-      { id: "stale-flight-removes-replacement", before: "if (this.flights.get(key) === flight) this.flights.delete(key);", after: "this.flights.delete(key);" },
-      { id: "synchronous-throw-escapes", before: "catch (error) { settle(false, error); }", after: "catch (error) { throw error; }" },
-      { id: "late-registration", before: "this.flights.set(key, flight);", after: "queueMicrotask(() => this.flights.set(key, flight));" },
+      {
+        id: "stale-flight-removes-replacement",
+        before:
+          "if (this.flights.get(key) === flight) this.flights.delete(key);",
+        after: "this.flights.delete(key);",
+      },
+      {
+        id: "synchronous-throw-escapes",
+        before: "catch (error) { settle(false, error); }",
+        after: "catch (error) { throw error; }",
+      },
+      {
+        id: "late-registration",
+        before: "this.flights.set(key, flight);",
+        after: "queueMicrotask(() => this.flights.set(key, flight));",
+      },
     ],
-    publicTests: deferred + `test("concurrent callers share one load", async () => {
+    publicTests:
+      deferred +
+      `test("concurrent callers share one load", async () => {
       const f=new SingleFlight<number>(), d=deferred<number>(); let calls=0;
       const a=f.run("a",()=>{calls++;return d.promise;});
       const b=f.run("a",()=>{calls++;return 99;}); expect(b).toBe(a);expect(calls).toBe(1);
       d.resolve(5);expect(await a).toBe(5); expect(f.pending()).toBe(0);
     });`,
-    hiddenTests: deferred + `test("old settlements cannot remove replacements", async () => {
+    hiddenTests:
+      deferred +
+      `test("old settlements cannot remove replacements", async () => {
       for(const rejectOld of [false,true]) {
         const f=new SingleFlight<number>(), a=deferred<number>(),b=deferred<number>();
         const old=f.run("x",()=>a.promise); const caught=old.then(v=>v,e=>e);
@@ -247,9 +276,21 @@ export const repairDiscoveryTasks: readonly RepairDiscoveryTask[] = [
     spec: "Repair TurnScheduler. schedule stores/replaces an arbitrary string ID with a finite due time and synchronous callback; invalid due throws without replacing the old job. Replacement receives a new insertion order. cancel returns whether a job was pending; size counts pending jobs. run(now) requires finite now, snapshots jobs due at or before now, and invokes them in ascending due time then insertion order. A callback may cancel or replace other jobs; skip a captured job if its current registration is no longer that exact job. Newly scheduled/replacement jobs always wait until a later run, even if already due. Remove each job before calling it. If a callback throws, propagate that exact value, retain all not-yet-invoked jobs, and allow subsequent runs. Reentrant run throws before changing state. Return count invoked when all callbacks succeed. There are no timers, promises, or automatic runs.",
     reference: schedulerReference,
     mutations: [
-      { id: "cancelled-snapshot-executes", before: "if (this.jobs.get(job.id) !== job) continue;", after: "// Invoke the captured job." },
-      { id: "exception-latches-running", before: "} finally { this.running = false; }", after: "} finally { /* running remains set */ }" },
-      { id: "exclusive-deadline", before: "job.due <= now", after: "job.due < now" },
+      {
+        id: "cancelled-snapshot-executes",
+        before: "if (this.jobs.get(job.id) !== job) continue;",
+        after: "// Invoke the captured job.",
+      },
+      {
+        id: "exception-latches-running",
+        before: "} finally { this.running = false; }",
+        after: "} finally { /* running remains set */ }",
+      },
+      {
+        id: "exclusive-deadline",
+        before: "job.due <= now",
+        after: "job.due < now",
+      },
     ],
     publicTests: `test("deadline is inclusive", () => {
       const s=new TurnScheduler();const seen:string[]=[];s.schedule("a",3,()=>seen.push("a"));

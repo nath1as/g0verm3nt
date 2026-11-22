@@ -1,5 +1,7 @@
 # Luna low-reasoning calibration v2 — 2026-09-20
 
+Review correction: v2 reused all six contracts and suites and also changed the prompt. Its changes were not all independent behavioral defects: replacing replay cursor with event count is equivalent on reachable valid states. The combined-source qualification did not test individual mutations. The outcomes below remain valid for the frozen run, but do not establish new task families or increased difficulty. Continue with the [revised protocol](repair-discovery-protocol.md).
+
 Result: **5/6 verified; still too easy under the frozen two-to-four-success rule**. Six direct `gpt-5.6-luna` attempts ran with explicit low reasoning. All provider usage was known; there were no feedback retries, tool calls, format failures, or infrastructure failures. No workflow comparison, learned route, assessment, promotion, or reuse was executed.
 
 | Task | Public checks | Hidden checks | Total tokens |

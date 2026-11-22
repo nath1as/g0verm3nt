@@ -284,6 +284,8 @@ G ::= id(I)
 
 A domain-specific predicate must be implemented by a separately defined shard and exposed as a typed result with its own contract and evidence. The harness may route on that result. This makes the semantic boundary enforceable by syntax: domain interpretation cannot be hidden inside a routing callback.
 
+For empirical semantic classifiers, applicability checking, estimation and action selection are distinct versioned capabilities. Unsupported input scope or missing evidence yields a declared `Unknown` before inference. The estimator's dependencies include its model, input projection, question schema and any calibration artifact; probability calibration is scoped empirical evidence, not a proof that a branch precondition holds. The action policy selects only independently eligible capabilities under the current allocation, with a compatible fallback or explicit failure. Selection does not grant authority: the runtime rechecks admission and allocation at dispatch. These capabilities use the existing `call`, `seq` and finite `route` grammar. The [semantic decision contract](docs/tasks/semantic-decision-contract.md) specifies their planned records, calibration provenance and acceptance cases without extending the calculus.
+
 Abstraction publication is a registry operation with contract/evidence obligations, not an unchecked `abstract(interface, expression)` expression.
 
 ### Typing and interpretation

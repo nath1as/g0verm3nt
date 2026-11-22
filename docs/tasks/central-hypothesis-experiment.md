@@ -1,5 +1,7 @@
 # Central hypothesis experiment: learn when to verify and retry
 
+Current continuation: [revised repair discovery protocol](repair-discovery-protocol.md). The original pilot completed with no observed workflow tradeoff; see [its result](central-hypothesis-result.md). The implementation-ready status below is historical. New live work requires the revised controls and its own frozen manifest.
+
 Status: discovery implementation ready. The twelve-task corpus, bounded feedback workflow, isolated public/hidden evaluator, discovery controller, and offline stop rules are implemented. Candidate generation, coding admission, assessment, and reuse remain conditional follow-ups if discovery supplies a useful tradeoff. No observations have yet been collected for this experiment; the controller freezes an exact manifest before the first provider call. No promotion is authorized by this document.
 
 Run corpus qualification with `bun src/experiments/central-hypothesis-run.ts <state-directory> --qualify`, then discovery with the same command without `--qualify`. The state directory must not contain a previous manifest: interrupted schedules are never automatically replayed. `manifest.json`, `qualification.json`, `report.json`, and the SQLite provider/evaluation records retain the experiment. The concrete discovery ceiling is twelve attempts; later-stage maxima below are not automatically scheduled.
