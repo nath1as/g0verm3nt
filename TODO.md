@@ -17,6 +17,7 @@ models:
 https://arxiv.org/abs/2611.21885
 https://thinkingmachines.ai/news/inkling-2-mini/
 https://www.frontiermemory.com/blog
+https://arxiv.org/abs/2507.07955
 
 use anything from: 
 Hermes Agent
